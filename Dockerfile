@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3.9-alpine
 LABEL author "Lingyan Li"
 
 ENV PYTHONUNBUFFERED 1
