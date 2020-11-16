@@ -20,3 +20,7 @@ class CommandTests(TestCase):
             gi.side_effect=[OperationalError]*5+[True]
             call_command('wait_for_db')
             self.assertEqual(gi.call_count,6)
+
+    def test_print_terminal(self):
+        "testing print to terminal command"
+        call_command('print_terminal','this is greatfdsfsdfsd')
