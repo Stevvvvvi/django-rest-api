@@ -28,4 +28,26 @@ class PublicUserApiTests(TestCase):
 
         self.assertEqual(res.status_code,status.HTTP_201_CREATED)
         user=get_user_model().objects.get(**res.data)
-        self.assertTrue('password',res.data)
+        self.assertTrue(user.check_password(payload['password']))
+        self.assertNotIn('password',res.data)
+
+    def test_user_exists(self):
+        "test creating user that already exist"
+        payload={'email':'test@gmail.com','password':'testpass'}
+        create_user(**payload)
+
+        res=self.client.post(CREATE_USER_URL,payload)
+
+        self.assertEqual(res.status_code,status.HTTP_400_BAD_REQUEST)
+
+    def test_password_too_short(self):
+        "test password must more than 5 characters"
+        payload={'email':'test@gmail.com','password':'pw','name':'test'}
+        res=self.client.post(CREATE_USER_URL,payload)
+
+        self.assertEqual(res.status_code,status.HTTP_400_BAD_REQUEST)
+        user_exists=get_user_model().objects.filter(
+            email=payload['email']
+
+        ).exists()
+        self.assertFalse(user_exists)
